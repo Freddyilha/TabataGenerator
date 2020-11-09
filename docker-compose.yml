@@ -1,0 +1,25 @@
+version: '3'
+services:
+  tabata-generator:
+    image: tabata-generator
+    container_name: tabata-generator
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "7676:7676"
+    volumes:
+      - "./src:usr/src/app"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=root
+
+volumes:
+  postgresql:
+    driver: local
+
