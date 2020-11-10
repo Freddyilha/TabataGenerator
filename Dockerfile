@@ -18,6 +18,4 @@ COPY . .
 
 EXPOSE 7676
 
-RUN ls -R
-
 CMD ["python", "TabataGenerator/manage.py", "runserver", "0.0.0.0:7676"]
