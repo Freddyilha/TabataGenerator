@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 RUN apt update \
     && apt install -y --no-install-recommends \
         postgresql-client \
-    && apt install -y vim \
+    && apt install -y vim ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

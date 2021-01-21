@@ -10,6 +10,8 @@ services:
       - "7676:7676"
     volumes:
       - './src:/usr/src/app/'
+    devices:
+      - '/dev/snd/:/dev/snd/'
     depends_on:
       - postgres
 
