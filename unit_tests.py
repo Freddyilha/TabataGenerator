@@ -6,7 +6,7 @@ class TestTimestampGenerator(unittest.TestCase):
         self.sut = Converter()
 
     def test_timestamps_returns_a_list(self):
-        self.assertIsInstance(float, float)
+        self.assertIsInstance(self.sut.generate_timestamps(), float)
 
 if __name__ == "__main__":
     unittest.main()
