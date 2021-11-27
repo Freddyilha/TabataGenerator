@@ -4,9 +4,9 @@ from pydub.playback import play
 class Converter:
     def generate(self):
 
-        twentyfive_seconds = 25 * 1000
+        twenty_seconds = 20 * 1000
 
-        fifthteen_seconds = 15 * 1000
+        ten_seconds = 10 * 1000
 
         track = AudioSegment.from_file("Songs/Track-1.mp3", "mp3")
 
@@ -14,18 +14,27 @@ class Converter:
 
         track_duration = len(track)
 
-        rest_countdown = [timestamp for timestamp in range(0, track_duration, twentyfive_seconds)] 
+        timestamps = [0,twenty_seconds]
 
-        exercices_countdown = [timestamp for timestamp in range(0, track_duration, fifthteen_seconds)] 
+        for index,timestamp in enumerate(range(0, track_duration, twenty_seconds+ten_seconds)):
+            if index % 2 == 0:
+                timestamps.append(timestamps[-1] + ten_seconds)
+            else:
+                timestamps.append(timestamps[-1] + twenty_seconds)
 
-        track_start = track[:20000]
-        rest_of_song = track[20*1000:]
+        for index,timestamp in enumerate(timestamps):
+            if index == 0:
+                final_track = track[timestamps[index] : timestamps[index+1]-5000] + (track[timestamps[index+1]-5000 : timestamps[index+1]]).overlay(countdown)
+            else:
+                if index == 1:
+                    continue
+                if index % 2 == 1:
+                    final_track = final_track + track[timestamps[index-1] : timestamps[index]-5000] + (track[timestamps[index]-5000 : timestamps[index]]).overlay(countdown)
+                else:
+                    final_track = final_track + (track[timestamps[index-1] : timestamps[index]-5000] - 10) + (track[timestamps[index]-5000 : timestamps[index]] - 10).overlay(countdown)
 
-        track_start = track_start.append(countdown, crossfade=(4126))
-        
-        play(track_start)
+        final_track.export("TabataSongs/Tabatified-lower-norfair.mp3", format="mp3")
 
-        # return [rest_countdown, exercices_countdown]
 
 if __name__ == '__main__':
     converter = Converter()

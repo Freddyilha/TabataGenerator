@@ -130,3 +130,6 @@ dmypy.json
 
 Songs/*
 !Songs/.gitkeep
+
+TabataSongs/*
+!TabataSongs/.gitkeep
