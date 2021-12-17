@@ -4,37 +4,48 @@ from pydub.playback import play
 class Converter:
     def generate(self):
 
-        twenty_seconds = 20 * 1000
+        five_seconds = 5 * 1000
 
         ten_seconds = 10 * 1000
 
-        track = AudioSegment.from_file("Songs/Track-1.mp3", "mp3")
+        fifteen_seconds = 15 * 1000
+
+        twenty_seconds = 20 * 1000
+
+        track = AudioSegment.from_file("Songs/Song_name.mp3", "mp3")
 
         countdown = AudioSegment.from_file("Songs/Five-seconds-countdown.mp3", "mp3")
 
         track_duration = len(track)
 
-        timestamps = [0,twenty_seconds]
+        rest_timestamps = [fifteen_seconds]
 
-        for index,timestamp in enumerate(range(0, track_duration, twenty_seconds+ten_seconds)):
-            if index % 2 == 0:
-                timestamps.append(timestamps[-1] + ten_seconds)
+        while rest_timestamps[-1] < track_duration:
+
+            if len(rest_timestamps) % 2 == 1:
+                rest_timestamps.append(rest_timestamps[-1] + ten_seconds)
             else:
-                timestamps.append(timestamps[-1] + twenty_seconds)
+                rest_timestamps.append(rest_timestamps[-1] + twenty_seconds)
 
-        for index,timestamp in enumerate(timestamps):
+        if rest_timestamps[-1] > track_duration:
+            rest_timestamps.pop()
+
+        start_timestamps = [timestamp+five_seconds for timestamp in rest_timestamps]
+
+        if start_timestamps[-1] > track_duration:
+            start_timestamps.pop()
+
+        for index, (rest, start) in enumerate(zip(rest_timestamps, start_timestamps)):
+
             if index == 0:
-                final_track = track[timestamps[index] : timestamps[index+1]-5000] + (track[timestamps[index+1]-5000 : timestamps[index+1]]).overlay(countdown)
+                final_track = track[0 : rest_timestamps[index]] + (track[rest_timestamps[index] : start_timestamps[index]]).overlay(countdown + 10)
             else:
-                if index == 1:
-                    continue
                 if index % 2 == 1:
-                    final_track = final_track + track[timestamps[index-1] : timestamps[index]-5000] + (track[timestamps[index]-5000 : timestamps[index]]).overlay(countdown)
+                    final_track = final_track + (track[start_timestamps[index-1] : rest_timestamps[index]] - 10) + (track[rest_timestamps[index] : start_timestamps[index]] - 10).overlay(countdown + 10)
                 else:
-                    final_track = final_track + (track[timestamps[index-1] : timestamps[index]-5000] - 10) + (track[timestamps[index]-5000 : timestamps[index]] - 10).overlay(countdown)
+                    final_track = final_track + track[start_timestamps[index-1] : rest_timestamps[index]] + (track[rest_timestamps[index] : start_timestamps[index]]).overlay(countdown + 10)
 
-        final_track.export("TabataSongs/Tabatified-lower-norfair.mp3", format="mp3")
-
+        final_track.export("TabataSongs/Tabatified-Song_name.mp3", format="mp3")
 
 if __name__ == '__main__':
     converter = Converter()
